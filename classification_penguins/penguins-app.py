@@ -5,29 +5,31 @@ import pickle
 from sklearn.ensemble import RandomForestClassifier
 
 st.write("""
-# Penguin Prediction App
-This app predicts the **Palmer Penguin** species!
-Data obtained from the [palmerpenguins library](https://github.com/allisonhorst/palmerpenguins) in R by Allison Horst.
+# Приложение для предсказания пингвинов
+Это приложение предсказывает вид **Пальмерского пингвина**!
+Данные взяты из [palmerpenguins library](https://github.com/allisonhorst/palmerpenguins) in R by Allison Horst.
 """)
 
-st.sidebar.header('User Input Features')
+st.sidebar.header('Пользовательский ввод данных')
 
 st.sidebar.markdown("""
-[Example CSV input file](https://raw.githubusercontent.com/dataprofessor/data/master/penguins_example.csv)
+[Пример CSV файла ввода](https://raw.githubusercontent.com/dataprofessor/data/master/penguins_example.csv)
 """)
 
 # Collects user input features into dataframe
-uploaded_file = st.sidebar.file_uploader("Upload your input CSV file", type=["csv"])
+uploaded_file = st.sidebar.file_uploader("загрузите ваш CSV файл, по примеру выше", type=["csv"])
 if uploaded_file is not None:
     input_df = pd.read_csv(uploaded_file)
 else:
     def user_input_features():
-        island = st.sidebar.selectbox('Island',('Biscoe','Dream','Torgersen'))
-        sex = st.sidebar.selectbox('Sex',('male','female'))
-        bill_length_mm = st.sidebar.slider('Bill length (mm)', 32.1,59.6,43.9)
-        bill_depth_mm = st.sidebar.slider('Bill depth (mm)', 13.1,21.5,17.2)
-        flipper_length_mm = st.sidebar.slider('Flipper length (mm)', 172.0,231.0,201.0)
-        body_mass_g = st.sidebar.slider('Body mass (g)', 2700.0,6300.0,4207.0)
+        island = st.sidebar.selectbox('Остров',('Biscoe','Dream','Torgersen'))
+        sex = st.sidebar.selectbox('Пол',('мужской','женский'))
+        bill_length_mm = st.sidebar.slider('Bill length (мм)', 32.1,59.6,43.9)
+        bill_depth_mm = st.sidebar.slider('Bill depth (мм)', 13.1,21.5,17.2)
+        flipper_length_mm = st.sidebar.slider('Длина ласты (мм)', 172.0,231.0,201.0)
+        body_mass_g = st.sidebar.slider('Масса тела (г)', 2700.0,6300.0,4207.0)
+        st.sidebar.image("image.png")
+
         data = {'island': island,
                 'bill_length_mm': bill_length_mm,
                 'bill_depth_mm': bill_depth_mm,
@@ -54,12 +56,12 @@ for col in encode:
 df = df[:1] # Selects only the first row (the user input data)
 
 # Displays the user input features
-st.subheader('User Input features')
+st.subheader('Введенные пользователем параметры')
 
 if uploaded_file is not None:
     st.write(df)
 else:
-    st.write('Awaiting CSV file to be uploaded. Currently using example input parameters (shown below).')
+    st.write('Ожидается CSV файл который будет загружен. Сейчас используются параметры введенные справа (показываются ниже).')
     st.write(df)
 
 # Reads in saved classification model
@@ -70,9 +72,16 @@ prediction = load_clf.predict(df)
 prediction_proba = load_clf.predict_proba(df)
 
 
-st.subheader('Prediction')
+st.subheader('Предсказание')
 penguins_species = np.array(['Adelie','Chinstrap','Gentoo'])
-st.write(penguins_species[prediction])
+pred =penguins_species[prediction]
+st.write(pred)
+if pred == 'Adelie':
+    st.image('adelie.png')
+elif pred == 'Chinstrap':
+    st.image('chinstrap.png')
+else:
+    st.image('gentoo.png')
 
-st.subheader('Prediction Probability')
+st.subheader('Вероятность предсказания')
 st.write(prediction_proba)
