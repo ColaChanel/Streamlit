@@ -1,4 +1,6 @@
 import pandas as pd
+import pickle
+from sklearn.ensemble import RandomForestClassifier
 penguins = pd.read_csv('penguins_cleaned.csv')
 
 # Ordinal feature encoding
@@ -23,10 +25,10 @@ X = df.drop('species', axis=1)
 Y = df['species']
 
 # Build random forest model
-from sklearn.ensemble import RandomForestClassifier
+
 clf = RandomForestClassifier()
 clf.fit(X, Y)
 
 # Saving the model
-import pickle
+
 pickle.dump(clf, open('penguins_clf.pkl', 'wb'))

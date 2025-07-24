@@ -15,7 +15,7 @@ st.sidebar.header('Пользовательский ввод данных')
 st.sidebar.markdown("""
 [Пример CSV файла ввода](https://raw.githubusercontent.com/dataprofessor/data/master/penguins_example.csv)
 """)
-
+dir = "classification_penguins/images/"
 # Collects user input features into dataframe
 uploaded_file = st.sidebar.file_uploader("загрузите ваш CSV файл, по примеру выше", type=["csv"])
 if uploaded_file is not None:
@@ -28,8 +28,11 @@ else:
         bill_depth_mm = st.sidebar.slider('Bill depth (мм)', 13.1,21.5,17.2)
         flipper_length_mm = st.sidebar.slider('Длина ласты (мм)', 172.0,231.0,201.0)
         body_mass_g = st.sidebar.slider('Масса тела (г)', 2700.0,6300.0,4207.0)
-        st.sidebar.image("image.png")
-
+        st.sidebar.image(f"{dir}image.png")
+        if sex =="женский": 
+            sex ="female"
+        else: 
+            sex ="male"
         data = {'island': island,
                 'bill_length_mm': bill_length_mm,
                 'bill_depth_mm': bill_depth_mm,
@@ -42,7 +45,7 @@ else:
 
 # Combines user input features with entire penguins dataset
 # This will be useful for the encoding phase
-penguins_raw = pd.read_csv('./penguins_cleaned.csv')
+penguins_raw = pd.read_csv('classification_penguins/penguins_cleaned.csv')
 penguins = penguins_raw.drop(columns=['species'])
 df = pd.concat([input_df,penguins],axis=0)
 
@@ -65,7 +68,7 @@ else:
     st.write(df)
 
 # Reads in saved classification model
-load_clf = pickle.load(open('./penguins_clf.pkl', 'rb'))
+load_clf = pickle.load(open('classification_penguins/penguins_clf.pkl', 'rb'))
 
 # Apply model to make predictions
 prediction = load_clf.predict(df)
@@ -77,11 +80,11 @@ penguins_species = np.array(['Adelie','Chinstrap','Gentoo'])
 pred =penguins_species[prediction]
 st.write(pred)
 if pred == 'Adelie':
-    st.image('adelie.png')
-elif pred == 'Chinstrap':
-    st.image('chinstrap.png')
+    st.image(f'{dir}adelie.png')
+elif pred == f'{dir}Chinstrap':
+    st.image(f'{dir}chinstrap.png')
 else:
-    st.image('gentoo.png')
+    st.image(f'{dir}gentoo.png')
 
 st.subheader('Вероятность предсказания')
 st.write(prediction_proba)
